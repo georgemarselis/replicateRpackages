@@ -21,6 +21,14 @@
 #  	** maintain package version number or upgrade to latest
 #
 
+#################################################################################################
+#
+# Failures:
+#	* if $TEMP fills up, compilation fails
+#	** to mitigate set $TMP appropriately
+#
+
+
 library_older_packages_location  <- "./Library"
 older_version                    <- # read directory and sort by alphabetical order, pick top, the top - 1 will be the import
 new_version                      <-  paste( R.version$major, R.version$minor, sep = "." )
@@ -28,6 +36,8 @@ allpkg_filename                  <- "all_pkgs.csv"
 localpkg_filename                <- "local_pkgs.csv"
 cranpkg_filename                 <- "cran_pkgs.csv"
 biocpkg_filename                 <- "bioc_pkgs.csv"
+
+# TODO read size of $TEMP dir and 
 
 r_cloud <-  "https://cloud.r-project.org"
 
