@@ -1,4 +1,15 @@
-#!/lsc/R/4.0.2/bin/Rscript
+#!/usr/bin/env Rscript
+
+## prerequisites
+# 
+# * load required R version via env modules
+#
+
+#################################################################################################
+#
+# TODO:
+# 	* save compilation errors and warnings to file for further inspection
+#
 
 library_older_packages_location  <- "./Library"
 older_version                    <- "3.6.1"
@@ -21,15 +32,16 @@ cran_pkgs  <- read.csv( import_cranpkgs_location,  stringsAsFactors = FALSE )
 bioc_pkgs  <- read.csv( import_biocpkgs_location,  stringsAsFactors = FALSE )
 
 
-#options( Ncpus = 48 ) # use 24 cores to compile concurrently 
+#options( Ncpus = 48 ) # use 48 cores to compile concurrently
+options( Ncpus = 4 ) # use 4 cores to compile concurrently
 
 rlibssite_new_location <- toString( Sys.getenv("R_LIBS_SITE"))
-install.packages( as.character( local_pkgs[, 2] ), repos = r_cloud , lib = rlibssite_new_location ) 
-install.packages( as.character( cran_pkgs[, 2]  ), repos = r_cloud , lib = rlibssite_new_location )
+install.packages( as.character( local_pkgs[, 2] ), repos = r_cloud , lib = rlibssite_new_location,  dependencies=TRUE, INSTALL_opts = c('--no-lock') )
+install.packages( as.character( cran_pkgs[, 2]  ), repos = r_cloud , lib = rlibssite_new_location,  dependencies=TRUE, INSTALL_opts = c('--no-lock' ) )
 
 if( !requireNamespace( "BiocManager", quietly = TRUE ) ) {
             install.packages( "BiocManager" )
 }
 
-BiocManager::install( as.character( bioc_pkgs[, 2]  ) )
+BiocManager::install( as.character( bioc_pkgs[, 2]  ), dependencies=TRUE, INSTALL_opt      s = c('--no-lock' ) )
 

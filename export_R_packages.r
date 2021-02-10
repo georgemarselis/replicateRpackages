@@ -1,7 +1,21 @@
 #!/usr/bin/env Rscript 
 
-#zz <- file("/dev/null", open = "wt")
-#sink(zz)
+## prerequisites
+# 
+# * load required R version via env modules
+#
+
+#################################################################################################
+#
+# TODO:
+#	* command line options https://stackoverflow.com/questions/3433603/parsing-command-line-arguments-in-r-scripts
+# 	* help -h
+#	* ? help
+#	* puppet manifestos
+# 	* ansible playbooks
+# 	* see if files have been exported already and print differences between files and read modules -d / --diff
+#
+
 
 library( sessioninfo, warn.conflicts = FALSE )
 library( dplyr, warn.conflicts = FALSE )
