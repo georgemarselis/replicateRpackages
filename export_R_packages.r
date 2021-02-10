@@ -34,9 +34,9 @@ export_cranpkgs_location   <- paste( export_path, cranpkg_filename  , sep = "/" 
 export_biocpkgs_location   <- paste( export_path, biocpkg_filename  , sep = "/" )
 export_localpkgs_location  <- paste( export_path, localpkg_filename , sep = "/" )
 
-#mkdir $library_location exists
-#dir.create( toString( save_path ) ) # does not fail if di exists
-#dir.create( toString( export_path ) )
+mkdir $library_location exists
+dir.create( toString( save_path ) ) # does not fail if dir exists
+dir.create( toString( export_path ) )
 
 ## list all installed packages
 pkgs <- installed.packages()[,'Package']
