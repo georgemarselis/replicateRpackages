@@ -3,11 +3,9 @@
 #zz <- file("/dev/null", open = "wt")
 #sink(zz)
 
-library(sessioninfo)
-library(dplyr)
-
+library( sessioninfo, warn.conflicts = FALSE )
+library( dplyr, warn.conflicts = FALSE )
 #library_location <- readline(prompt="Enter R library path to read from: ")
-
 
 #  <- "~/Library"
 allpkg_filename   <- "all_pkgs.csv"
@@ -23,8 +21,8 @@ export_biocpkgs_location   <- paste( export_path, biocpkg_filename  , sep = "/" 
 export_localpkgs_location  <- paste( export_path, localpkg_filename , sep = "/" )
 
 #mkdir $library_location exists
-dir.create( toString( save_path ) ) # does not fail if di exists
-dir.create( toString( export_path ) )
+#dir.create( toString( save_path ) ) # does not fail if di exists
+#dir.create( toString( export_path ) )
 
 ## list all installed packages
 pkgs <- installed.packages()[,'Package']
@@ -40,22 +38,27 @@ localpkgs <- tibble( pkgs, source ) %>% # grab local packages
 
 cranpkgs  <- tibble( pkgs, source ) %>% # grab CRAN pacakges
     filter( source ==  paste( "CRAN (R ", paste( R.version$major, R.version$minor, sep = "." ), ")", sep = "" )  )
-biocpkgs  <- tibble( pkgs, source ) %>% # grab Bioconductor pacakges
+
+biocpkgs  <- tibble( pkgs, source ) %>% # grab Bioconductor packages
     filter( source == "Bioconductor" ) 
 githubpkgs <- tibble( pkgs, source ) %>% # grab packages from github
 	filter( source == "Github" )
 
-print( allpkgs   )
-print( localpkgs )
-print( cranpkgs  )
-print( biocpkgs  )
-print( githubpkgs )
+for( pkgs in list( allpkgs, localpkgs, cranpkgs, biocpkgs, githubpkgs ) ) {
+    pkgs %>% print( n = Inf, col.names = FALSE  )
+    writeLines( "\n" )
+    print( "===========================================================================================" )
+    print( "===========================================================================================" )
+    writeLines( "\n" )
+    deparse(substitute(pkgs))
+    #write.csv( deparse(substitute(pkgs)),   file = toString( c( "export",deparse(substitute(pkgs)),"_location"   ) ) )
+}
 
 print( export_allpkgs_location   )
 print( export_localpkgs_location )
 print( export_cranpkgs_location  )
 print( export_biocpkgs_location  )
-print( export_githubpkgs_location  )
+#print( export_githubpkgs_location  )
 
 
 write.csv( allpkgs,   file = toString( export_allpkgs_location   ) )
