@@ -1,18 +1,28 @@
 #!/usr/bin/env Rscript
 
-## prerequisites
+## Prerequisites
 # 
-# * load required R version via env modules
+# 	* load required R version via env modules
+
+## Current assumptions:
 #
+# 	* you want to load modules from current installed version -1 .
 
 #################################################################################################
 #
 # TODO:
 # 	* save compilation errors and warnings to file for further inspection
+#   * when detecting compilation errors, retry to compile everything from the top, in case of dependencies
+# 	** when detecting compilation errors, examine the modules that failed and try to compile them twice again
+#	*** if above fails, leave warning with failed packages, to examine log.
+# 	* command line options
+# 	** present user all versions found under ./Library", ask which one, much like selecting from CRAN
+#	** find diff and install only those. 
+#  	** maintain package version number or upgrade to latest
 #
 
 library_older_packages_location  <- "./Library"
-older_version                    <- "3.6.1"
+older_version                    <- # read directory and sort by alphabetical order, pick top, the top - 1 will be the import
 new_version                      <-  paste( R.version$major, R.version$minor, sep = "." )
 allpkg_filename                  <- "all_pkgs.csv"
 localpkg_filename                <- "local_pkgs.csv"
@@ -33,7 +43,7 @@ bioc_pkgs  <- read.csv( import_biocpkgs_location,  stringsAsFactors = FALSE )
 
 
 #options( Ncpus = 48 ) # use 48 cores to compile concurrently
-options( Ncpus = 4 ) # use 4 cores to compile concurrently
+options( Ncpus = 8 ) # use 8 cores to compile concurrently
 
 rlibssite_new_location <- toString( Sys.getenv("R_LIBS_SITE"))
 install.packages( as.character( local_pkgs[, 2] ), repos = r_cloud , lib = rlibssite_new_location,  dependencies=TRUE, INSTALL_opts = c('--no-lock') )
