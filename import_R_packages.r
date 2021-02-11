@@ -1,12 +1,13 @@
 #!/usr/bin/env Rscript
 
 ## Prerequisites
-# 
+#
 # 	* load required R version via env modules
 
 ## Current assumptions:
 #
-# 	* you want to load modules from current installed version -1 .
+# 	* you want to load modules from current installed version
+#
 
 #################################################################################################
 #
@@ -17,8 +18,11 @@
 #	*** if above fails, leave warning with failed packages, to examine log.
 # 	* command line options
 # 	** present user all versions found under ./Library", ask which one, much like selecting from CRAN
-#	** find diff and install only those. 
+#	** find diff and install only those.
 #  	** maintain package version number or upgrade to latest
+#   * read size of $TEMP dir and warn if it is getting full.
+#   ** hault compilation and prompt user to 1. clean $TEMP 2. wait for them to clean it up and retry again
+#   * if newer version than the one being imported exists, make a note in the log, skip package and notify user
 #
 
 #################################################################################################
@@ -26,7 +30,8 @@
 # Failures:
 #	* if $TEMP fills up, compilation fails
 #	** to mitigate set $TMP appropriately
-#
+#	* "Installation path not writeable, unable to update packages:" 
+#		Solution: you are not root, and Bioconductor wants to upgrade packages in root area
 
 
 library_older_packages_location  <- "./Library"
@@ -37,7 +42,6 @@ localpkg_filename                <- "local_pkgs.csv"
 cranpkg_filename                 <- "cran_pkgs.csv"
 biocpkg_filename                 <- "bioc_pkgs.csv"
 
-# TODO read size of $TEMP dir and 
 
 r_cloud <-  "https://cloud.r-project.org"
 
@@ -63,5 +67,6 @@ if( !requireNamespace( "BiocManager", quietly = TRUE ) ) {
             install.packages( "BiocManager" )
 }
 
-BiocManager::install( as.character( bioc_pkgs[, 2]  ), dependencies=TRUE, INSTALL_opt      s = c('--no-lock' ) )
+BiocManager::install( as.character( bioc_pkgs[, 2]  ), dependencies=TRUE, INSTALL_opts = c('--no-lock' ), lib=new_version )
 
+#BiocManager::install(  pkgs=c( "foreign", "KernSmooth", "Matrix", "nlme", "nnet", "spatial" ), lib="/lsc/rlibssite/4.0.0" )
