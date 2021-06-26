@@ -33,6 +33,9 @@
 #	* "Installation path not writeable, unable to update packages:" 
 #		Solution: you are not root, and Bioconductor wants to upgrade packages in root area
 
+library( parallel )
+
+ncores <- detectCores( )
 
 library_older_packages_location  <- "./Library"
 older_version                    <- # read directory and sort by alphabetical order, pick top, the top - 1 will be the import
@@ -56,8 +59,7 @@ cran_pkgs  <- read.csv( import_cranpkgs_location,  stringsAsFactors = FALSE )
 bioc_pkgs  <- read.csv( import_biocpkgs_location,  stringsAsFactors = FALSE )
 
 
-#options( Ncpus = 48 ) # use 48 cores to compile concurrently
-options( Ncpus = 8 ) # use 8 cores to compile concurrently
+options( Ncpus = ncores ) # use all the detected cores to compile concurrently
 
 rlibssite_new_location <- toString( Sys.getenv("R_LIBS_SITE"))
 install.packages( as.character( local_pkgs[, 2] ), repos = r_cloud , lib = rlibssite_new_location,  dependencies=TRUE, INSTALL_opts = c('--no-lock') )
